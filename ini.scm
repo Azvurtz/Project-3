@@ -1,9 +1,6 @@
 ; ini.scm - Project 3: Scheme Interpreter Extension
 ; Implements rational numbers and extended built-in functions
 
-; ============================================================
-; BASIC HELPERS (from Project 2, needed as foundation)
-; ============================================================
 
 (define (not x) (if x #f #t))
 
@@ -52,10 +49,7 @@
 
 ; apply is handled natively by the interpreter
 
-; ============================================================
-; INTEGER ARITHMETIC PRIMITIVES
-; These wrap the built-in Java operations (b+, b-, b*, b/)
-; ============================================================
+
 
 ; integer arithmetic primitives wrapping Java built-ins
 (define (int+ a b) (b+ a b))
@@ -65,9 +59,7 @@
 (define (int= a b) (b= a b))
 (define (int< a b) (b< a b))
 
-; ============================================================
-; QUOTIENT AND REMAINDER via repeated subtraction
-; ============================================================
+; quotient
 
 (define (quotient a b)
   ; use Java's built-in integer division via b/
@@ -77,10 +69,7 @@
   ; remainder via: a - b * quotient(a, b)
   (int- a (int* b (quotient a b))))
 
-; ============================================================
-; GCD and LCM
-; Euclid's algorithm reference: https://en.wikipedia.org/wiki/Euclidean_algorithm
-; ============================================================
+
 
 (define (gcd a b)
   ; make both positive first
@@ -98,10 +87,6 @@
       (int* (quotient (if (int< a 0) (int- 0 a) a) g)
             (if (int< b 0) (int- 0 b) b))))
 
-; ============================================================
-; RATIONAL NUMBER REPRESENTATION
-; A rational is stored as (rational numerator denominator)
-; ============================================================
 
 (define (rational? x)
   (if (pair? x)
@@ -121,7 +106,7 @@
                   #f
                   (if (null? x)
                       #f
-                      ; if it's not a bool, pair, or null, assume integer
+                      ; if it's not a bool pair or null, assume integer
                       ; (strings and symbols are not numbers)
                       (if (string? x)
                           #f
@@ -136,9 +121,7 @@
           #t
           #f)))
 
-; ============================================================
-; RATIONAL CONSTRUCTORS / ACCESSORS
-; ============================================================
+
 
 (define (numerator x)
   (if (rational? x)
@@ -166,15 +149,15 @@
       sn
       (list 'rational sn sd)))
 
-; convert any number to rational form for arithmetic
+
 (define (to-rational x)
   (if (rational? x)
       x
       (list 'rational x 1)))
 
-; ============================================================
+
 ; ABS
-; ============================================================
+
 
 (define (abs x)
   (if (rational? x)
@@ -183,10 +166,7 @@
         (denominator x))
       (if (int< x 0) (int- 0 x) x)))
 
-; ============================================================
-; ARITHMETIC OPERATIONS: +, -, *, /
-; Each handles integer and rational arguments
-; ============================================================
+;arithmics!!
 
 ; add two numbers
 (define (add2 a b)
@@ -287,10 +267,7 @@
               (div2 (car args) (cadr args))
               (div2 (car args) (apply * (cdr args)))))))
 
-; ============================================================
-; COMPARISON HELPERS
-; Convert to common denominator for comparison
-; ============================================================
+
 
 ; compare two numbers, returns -1, 0, or 1
 (define (num-compare a b)
@@ -307,9 +284,7 @@
           -1
           1)))
 
-; ============================================================
-; N-ARY COMPARISON OPERATIONS
-; ============================================================
+
 
 (define (= . args)
   (if (null? args)
@@ -356,9 +331,7 @@
               #f
               (apply >= (cdr args))))))
 
-; ============================================================
-; MAX AND MIN
-; ============================================================
+
 
 (define (max2 a b)
   (if (int= (num-compare a b) 1) a b))
@@ -376,9 +349,7 @@
       (car args)
       (min2 (car args) (apply min (cdr args)))))
 
-; ============================================================
-; ZERO?, POSITIVE?, NEGATIVE?
-; ============================================================
+
 
 (define (zero? x)
   (if (rational? x)
@@ -395,9 +366,7 @@
       (int< (numerator x) 0)
       (int< x 0)))
 
-; ============================================================
-; EQV? AND EQUAL?
-; ============================================================
+
 
 (define (eqv? a b)
   (if (rational? a)
@@ -421,9 +390,7 @@
           #f
           (eqv? a b))))
 
-; ============================================================
-; ASSOCIATION LIST OPERATIONS
-; ============================================================
+
 
 (define (assq key lst)
   (if (null? lst)
@@ -446,10 +413,9 @@
           (car lst)
           (assoc key (cdr lst)))))
 
-; ============================================================
+
 ; WRITE FUNCTION w
-; Prints rational numbers as n/d, prints lists on one line
-; ============================================================
+
 
 (define (w x)
   (cond
@@ -479,9 +445,8 @@
             (display " . ")
             (w x)))))
 
-; ============================================================
 ; ADDITIONAL LIST UTILITIES
-; ============================================================
+
 
 (define (list? x)
   (if (null? x)
